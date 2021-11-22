@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import {useEffect, useState} from "react";
+import Layout from "./components/layout";
+import { useFetch } from "./hooks/use.fetch.hook"
+import {TablePurpose} from "./components/table.purpose";
 
-function App() {
+const App = () => {
+    const { GET } = useFetch()
+    const [loading, setLoading] = useState(false)
+    const [data, setData] = useState([])
+
+    useEffect(() => {
+        ;(async () => {
+            setLoading(true)
+            const response = await GET(`/division/all`)
+            setLoading(false)
+            if (!response) return
+            setData(response.data)
+        })()
+    }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <>
+          <Layout>
+              <TablePurpose loading={loading} data={data} />
+          </Layout>
+      </>
   );
 }
 
